@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Envs / IDE
+.env
+.venv/
+venv/
+ENV/
+.idea/
+.vscode/
+*.swp
+
+# Logs & experiment dumps
+*.log
+wandb/
+plot/
+video/
+eval_video/
+MUJOCO_LOG.TXT
+
+# Large artifacts — never commit
+*.ckpt
+*.hdf5
+*.h5
+*.mp4
+*.zip
+*.pt
+*.pth
+*.onnx
+*.whl
+
+# Local-only notes (do not push)
+*.local.md
+docs/TEAMMATE_HANDOFF.local.md
+
+# Local data mounts (symlinks look like files to git — no trailing slash)
+data/sim_*
+data/outputs/
+data/outputs
+data/.local_paths.env
+!data/.gitkeep
+!data/README.md
+
+# Generated labels / caches
+experiments/**/outputs/
+experiments/**/*.ckpt
+!experiments/**/.gitkeep
+!experiments/**/*.md
+
+# OS
+.DS_Store
+Thumbs.db

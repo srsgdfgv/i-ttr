@@ -1,0 +1,48 @@
+# Interaction graph for ALOHA sim bimanual cube transfer. See sim_insertion_human.yaml for field docs.
+task: sim_transfer_cube_human
+xml: third_party/act/assets/bimanual_viperx_transfer_cube.xml
+camera: top
+dt: 0.02
+
+objects:
+  box:
+    body: box
+    geoms: [red_box]
+    color: red
+
+entities:
+  E_L: {effector: left}
+  E_R: {effector: right}
+  box:
+    object: box
+    boxes: [[0, 0, 0, 0.02, 0.02, 0.02]]
+    char_size: 0.04
+
+pairs:
+  - {a: E_R, b: box, eps_pos: 0.003, eps_rot_deg: 3.0}
+  - {a: E_L, b: box, eps_pos: 0.003, eps_rot_deg: 3.0}
+
+label:
+  kappa: 0.1
+  g0: 0.25
+  g_contact: 0.15
+  g_release: 0.4
+  smooth_sec: 0.12
+  motion_smooth_sec: 0.3
+  event_pre_sec: 0.1
+  event_post_sec: 0.1
+  lead_sec: 0.0
+  chunk_lead_sec: 0.0
+
+resample:
+  rho: null
+  s_max: 4
+
+track:
+  iou_refine: 0.75
+  min_pixels: 40
+  attach_dist: 0.01
+  release_dist: 0.02
+  carry_min_gain: 0.05
+  physics_substeps: 5
+  physics_iou_min: 0.70

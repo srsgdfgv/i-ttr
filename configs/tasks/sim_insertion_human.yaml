@@ -1,0 +1,69 @@
+# Interaction graph for ALOHA sim insertion.
+# Lengths in meters; boxes are [cx, cy, cz, hx, hy, hz] in the object body frame.
+task: sim_insertion_human
+xml: third_party/act/assets/bimanual_viperx_insertion.xml
+camera: top
+dt: 0.02
+
+objects:
+  peg:
+    body: peg
+    geoms: [red_peg]
+    color: red
+  socket:
+    body: socket
+    geoms: [socket-1, socket-2, socket-3, socket-4]
+    color: blue
+
+# Interaction regions. Effectors use finger mesh vertices from FK.
+entities:
+  E_L: {effector: left}
+  E_R: {effector: right}
+  peg:
+    object: peg
+    boxes: [[0, 0, 0, 0.06, 0.01, 0.01]]
+    char_size: 0.02
+  socket:
+    object: socket
+    boxes:
+      - [0, 0, -0.02, 0.06, 0.018, 0.002]
+      - [0, 0, 0.02, 0.06, 0.018, 0.002]
+      - [0, 0.02, 0, 0.06, 0.002, 0.018]
+      - [0, -0.02, 0, 0.06, 0.002, 0.018]
+    char_size: 0.04
+  socket_hole:
+    object: socket
+    boxes: [[0, 0, 0, 0.06, 0.018, 0.018]]
+    char_size: 0.036
+
+# Only task-relevant pairs are active. Gap is normalized by the char_size of `b`.
+# eps_pos / eps_rot_deg are task-specific initial tolerances (include perception error).
+pairs:
+  - {a: E_R, b: peg, eps_pos: 0.002, eps_rot_deg: 2.0}
+  - {a: E_L, b: socket, eps_pos: 0.002, eps_rot_deg: 2.0}
+  - {a: peg, b: socket_hole, eps_pos: 0.002, eps_rot_deg: 2.0}
+
+label:
+  kappa: 0.1          # Weber fraction for free approach
+  g0: 0.25            # gap regularizer, in units of char_size
+  g_contact: 0.15     # normalized gap: contact starts below this
+  g_release: 0.4      # ... and ends above this (hysteresis)
+  smooth_sec: 0.12    # Savitzky-Golay window for gap, seconds
+  motion_smooth_sec: 0.3  # window for relative motion in contact (suppresses tracking jitter)
+  event_pre_sec: 0.1  # offline-only window before a contact event
+  event_post_sec: 0.1
+  lead_sec: 0.0       # ablation: backward max-filter on frequency
+  chunk_lead_sec: 0.0 # ablation: exponential backward envelope
+
+resample:
+  rho: null           # null => natural density clip(f*dt, 1/s_max, 1)
+  s_max: 4
+
+track:
+  iou_refine: 0.75          # vision refine when rendered/observed mask IoU drops below
+  min_pixels: 40            # skip IoU checks when object is mostly occluded
+  attach_dist: 0.01         # both fingers within this (m) => enter carry (vision fallback)
+  release_dist: 0.02        # release carry when fingers exceed this
+  carry_min_gain: 0.05      # while carried, accept pose correction only if IoU gains this much
+  physics_substeps: 5       # interpolate robot between frames and step physics this many times
+  physics_iou_min: 0.70     # below this, fall back from physics poses to vision

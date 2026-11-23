@@ -1,0 +1,24 @@
+# Shared experiment defaults (ACT / ALOHA sim)
+task: sim_insertion_human
+dt: 0.02
+keep_ratio: null          # null => match Entropy empirical ratio per task
+policy: ACT
+chunk_size: 25
+kl_weight: 10
+hidden_dim: 512
+dim_feedforward: 3200
+lr: 1.0e-5
+num_epochs: 3000
+temporal_agg: true
+seeds: [0, 1, 2]
+num_rollouts: 50
+high_gripper_gain: true
+
+label:
+  kappa: 0.1
+  event_half_window: 5
+  s_max: 4
+
+paths:
+  data_root: data
+  ckpt_root: data/outputs
