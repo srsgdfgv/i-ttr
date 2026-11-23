@@ -101,24 +101,27 @@ METHODS="full tsr" LEADS="0 0.4" NUM_EPISODES=10 EPOCHS=200 NUM_ROLLOUTS=5 \
 | tsr | `tsr` + lead `0` | `tsr_lead0_s0` |
 | tsr+lead | `tsr` + lead `>0` | `tsr_lead0.4_s0` |
 
-**B. 锚点**（约 2.5 小时/组）
+**B. 先跑 tsr（无 lead）**（约 2–3 小时/单卡）
+
+与已有 demo / kin 数字对比，再决定是否改方法；**此步不要开 lead**。
 
 ```bash
-METHODS="full tsr" LEADS="0" SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=anchor \
+METHODS="tsr" LEADS="0" SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=tsr0 \
   WORKERS=8 bash scripts/run_lead_sweep.sh
 ```
 
-预期：`full` 成功率接近 E1 摘要中的高增益 baseline（约 20%）；`tsr_lead0` 应非零。若 full 也接近 0，先查 `logs/*/eval.log`，不要直接开完整扫描。
-
-**C. 完整扫描**（必须含 demo+lead / kin+lead / tsr / tsr+lead）
+**C. 再检验 lead**（方法确认后再跑）
 
 ```bash
-METHODS="full tsr entropy kin" LEADS="0 0.2 0.4 0.8" \
-  SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=lead_v1 WORKERS=8 \
+METHODS="entropy kin" LEADS="0.2 0.4 0.8" \
+  SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=lead_baselines WORKERS=8 \
+  bash scripts/run_lead_sweep.sh
+METHODS="tsr" LEADS="0.2 0.4 0.8" \
+  SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=lead_tsr WORKERS=8 \
   bash scripts/run_lead_sweep.sh
 ```
 
-一次跑完会得到：full；demo / demo+lead；kin / kin+lead；tsr / tsr+lead（各 lead 秒数各一组）。同扫描内共用同一 ρ，组间只差「帧留在哪里」。
+同一次扫描内各方法共用同一 ρ；每个 lead 单独一个 policy。
 
 ## 6. 单独步骤（调试用）
 

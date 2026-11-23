@@ -47,13 +47,11 @@ python scripts/preflight.py --need_labels
 METHODS="full tsr" LEADS="0 0.4" NUM_EPISODES=10 EPOCHS=200 NUM_ROLLOUTS=5 \
   RUN_TAG=smoke bash scripts/run_lead_sweep.sh
 
-# 正式实验：单 seed=0 · 3000 epoch · 50 rollout
-# 产出 full / demo(=entropy)±lead / kin±lead / tsr±lead
-METHODS="full tsr" LEADS="0" SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=anchor \
+# 正式：先 tsr（无 lead）对照已有 demo/kin；确认方法后再扫 lead
+METHODS="tsr" LEADS="0" SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=tsr0 \
   WORKERS=8 bash scripts/run_lead_sweep.sh
-METHODS="full tsr entropy kin" LEADS="0 0.2 0.4 0.8" \
-  SEED=0 EPOCHS=3000 NUM_ROLLOUTS=50 RUN_TAG=lead_v1 WORKERS=8 \
-  bash scripts/run_lead_sweep.sh
+# METHODS="entropy kin" LEADS="0.2 0.4 0.8" ... RUN_TAG=lead_baselines
+# METHODS="tsr" LEADS="0.2 0.4 0.8" ... RUN_TAG=lead_tsr
 ```
 
 输出在 `data/outputs/tsr/`（不入 git）；汇总表写入 `experiments/e1_lead/lead_<RUN_TAG>.md`。

@@ -2,12 +2,8 @@
 
 正式设定：单 seed=`0` · 3000 epoch · 50 rollout。
 
-对照组（脚本 `entropy` = DemoSpeedup = demo）：
-
-- full
-- demo / demo+lead
-- kin / kin+lead
-- tsr / tsr+lead
+顺序：先 `tsr`（无 lead）对照已有 demo/kin → 再扫 lead（demo+lead / kin+lead / tsr+lead）。
+脚本 `entropy` = DemoSpeedup = demo。
 
 旧仓库结果摘要（对照）：
 
